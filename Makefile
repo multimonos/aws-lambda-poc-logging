@@ -47,3 +47,6 @@ logs:
 
 logs-info:
 	aws logs filter-log-events --log-group-name "/aws/lambda/$(DEV_FN)" --no-cli-pager |grep "INFO"
+
+tail:
+	aws logs tail "/aws/lambda/$(DEV_FN)" --no-cli-pager --follow 
