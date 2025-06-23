@@ -38,6 +38,4 @@ def lambda_handler(event: dict[str, Any], context: Any) -> dict[str, Any]:
 
 
 if __name__ == "__main__":
-    print(lambda_handler({"dryrun": True, "foobar": True, "bam": "bazzzz"}, None))
-    print(lambda_handler({"dryrun": False, "foobar": True, "bam": "bazzzz"}, None))
-    print(lambda_handler({"foobar": True, "bam": "bazzzz"}, None))
+    pass
