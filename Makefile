@@ -19,14 +19,15 @@ run:
 test:
 	clear && python -m pytest -vs
 
-dev-invoke:
+invoke:
 	@aws lambda invoke --function-name $(DEV_FN) --payload fileb://payload.json res.json && cat res.json |jq
 
-dev-get:
+get:
 	curl -X GET $(DEV_URL)
 
-dev-headers:
+get-headers:
 	curl -IL -X GET $(DEV_URL)
+
 
 prepare:
 	git rev-parse HEAD > src/commit.txt \
@@ -34,11 +35,15 @@ prepare:
 	&& rm -f $(target) \
 	&& (cd $(src) && zip -r ../$(target) . -x ".*" "__pycache__/*" "venv/*") 
 
-dev-deploy:
+deploy:
 	make prepare \
 	&& aws lambda update-function-code --function-name $(DEV_FN) --zip-file fileb://$(target) --no-cli-pager \
 	&& sleep 5 \
 	&& ENV_CONFIG=$$(jq -c .Environment conf/dev.json) \
 	&& aws lambda update-function-configuration --function-name $(DEV_FN) --environment "$$ENV_CONFIG" --no-cli-pager 
 
+logs:
+	aws logs filter-log-events --log-group-name "/aws/lambda/$(DEV_FN)" --no-cli-pager
 
+logs-info:
+	aws logs filter-log-events --log-group-name "/aws/lambda/$(DEV_FN)" --no-cli-pager |grep "INFO"
